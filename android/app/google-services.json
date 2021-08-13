@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "229197347223",
+    "project_id": "umojawendaniapp",
+    "storage_bucket": "umojawendaniapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229197347223:android:31d9105398943f6ed62cd2",
+        "android_client_info": {
+          "package_name": "com.surepesa.umojawendani"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "229197347223-ea7mfd1vr5n132g7c96uss4fll1dpp3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzrcjQdcAczNa57qZ8ctOqm9G4aHKh7pk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "229197347223-ea7mfd1vr5n132g7c96uss4fll1dpp3f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
