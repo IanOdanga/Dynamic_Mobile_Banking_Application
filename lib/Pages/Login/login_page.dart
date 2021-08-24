@@ -20,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:untitled/Services/authorization_service.dart';
 import 'package:untitled/Services/secure_storage_service.dart';
+import 'package:untitled/Model/login_model.dart';
 
 class LandingViewModel extends ChangeNotifier {
   bool _logIn = false;
@@ -277,7 +278,7 @@ class _LoginPageState extends State<LoginPage> {
           if (value == null || value.isEmpty) {
             return 'CloudPESA Pin is required';
           }
-          return null;
+          else return null;
         },
         decoration: InputDecoration(
             labelText: 'CloudPESA Pin',
@@ -355,9 +356,10 @@ class _LoginPageState extends State<LoginPage> {
               borderRadius: BorderRadius.circular(50)
           ),
           onPressed: () {
+            CircularProgressIndicator();
+            _isLoading = true;
             setState(() {
               _isLoading = true;
-              CircularProgressIndicator();
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                       content: Text('Authenticating ... Please wait')));

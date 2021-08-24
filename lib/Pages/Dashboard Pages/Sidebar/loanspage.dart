@@ -2,23 +2,26 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:untitled/Services/authorization_service.dart';
 
 class DataService {
-  Future<LoanResponse> getLoans() async {
+  Future<LoanResponse> getLoans(String phoneNumber, String idNumber) async {
     final queryParameters = {
       'mobile_no': '+254740481483',
     };
 
     final uri = Uri.https(
-        'suresms.co.ke', ':3438/apiMobileGetAllLoans', queryParameters);
+        'suresms.co.ke:3438/api/', 'MobileGetAllLoans', queryParameters);
 
     final response = await http.get(uri,
       headers: {
-        HttpHeaders.authorizationHeader: '22f61fa408c3b26e36c817501354f0e5e82bb6794871495bffed62bb90dd1230',
+        HttpHeaders.authorizationHeader: 'accessToken',
       },
     );
     print(response.body);
@@ -137,12 +140,14 @@ class LoansPage extends StatefulWidget{
 class _LoansPageState extends State<LoansPage> {
   LoanResponse? _response;
 
-  //final _cityTextController = TextEditingController();
+  final _memberNoController = TextEditingController();
+  final _idNoController = TextEditingController();
   final _dataService = DataService();
 
 
     @override
     Widget build(BuildContext context) {
+      final FlutterSecureStorage flutterSecureStorage;
       return Scaffold(
         appBar: AppBar(
           title: Text('Loans',
@@ -201,17 +206,48 @@ class _LoansPageState extends State<LoansPage> {
                     Text(_response!.loanInfo.name)
                   ],
                 ),
-              /*Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(vertical: 50),
                 child: SizedBox(
                   width: 150,
                   child: TextField(
-                      controller: _cityTextController,
-                      decoration: InputDecoration(labelText: 'Loans'),
+                      controller: _memberNoController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(labelText: 'Phone Number',
+                        labelStyle: GoogleFonts.lato(
+                            textStyle: TextStyle(
+                              color: Colors.black,
+                            )
+                        ),
+                      ),
                       textAlign: TextAlign.center),
                 ),
-              ),*/
-              ElevatedButton(onPressed: _search, child: Text('Get Loans'))
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: SizedBox(
+                  width: 150,
+                  child: TextField(
+                      controller: _idNoController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(labelText: 'ID Number',
+                        labelStyle: GoogleFonts.lato(
+                            textStyle: TextStyle(
+                              color: Colors.black,
+                            )
+                        ),
+                      ),
+                      textAlign: TextAlign.center),
+                ),
+              ),
+              ElevatedButton(onPressed: _search, child: Text('Get Loans',
+              style: GoogleFonts.lato(
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                    )
+                  ),
+                )
+              )
             ],
           ),
         ),
@@ -219,7 +255,7 @@ class _LoansPageState extends State<LoansPage> {
     }
   void _search() async {
       CircularProgressIndicator();
-    final response = await _dataService.getLoans();
+    final response = await _dataService.getLoans(_memberNoController.text, _idNoController.text);
     setState(() => _response = response);
   }
 }

@@ -55,17 +55,17 @@ class _UpdatesState extends State<Updates> {
             children: <Widget>[
               Center(
                 child: Text('App version: v1.0.0.0',
-                    style: GoogleFonts.raleway(
+                    style: GoogleFonts.lato(
                         textStyle: TextStyle(
                           color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                          //fontWeight: FontWeight.bold,
                           fontSize: 20,
                         )
                     )),
               ),
               ElevatedButton(
                 child: Text('Check for Update',
-                    style: GoogleFonts.raleway(
+                    style: GoogleFonts.lato(
                         textStyle: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -77,7 +77,7 @@ class _UpdatesState extends State<Updates> {
               ),
               ElevatedButton(
                 child: Text('Perform immediate update',
-                    style: GoogleFonts.raleway(
+                    style: GoogleFonts.lato(
                         textStyle: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -95,7 +95,7 @@ class _UpdatesState extends State<Updates> {
               ),
               ElevatedButton(
                 child: Text('Start flexible update',
-                    style: GoogleFonts.raleway(
+                    style: GoogleFonts.lato(
                         textStyle: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -118,7 +118,7 @@ class _UpdatesState extends State<Updates> {
               ),
               ElevatedButton(
                 child: Text('Complete flexible update',
-                    style: GoogleFonts.raleway(
+                    style: GoogleFonts.lato(
                         textStyle: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
