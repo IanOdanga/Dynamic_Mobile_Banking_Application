@@ -18,6 +18,8 @@ import 'package:untitled/Widgets/placeholder_widget.dart';
 import '../../Services/authorization_service.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:untitled/Services/authorization_service.dart';
+import 'package:untitled/Services/secure_storage_service.dart';
 
 class LandingViewModel extends ChangeNotifier {
   bool _logIn = false;
@@ -355,12 +357,10 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () {
             setState(() {
               _isLoading = true;
-              loading= true as Row;
               CircularProgressIndicator();
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                       content: Text('Authenticating ... Please wait')));
-
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (context) => Dashboard()));
             });
@@ -387,6 +387,7 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 logo,
                 inputPassword,
+                loading,
                 buttonLogin,
               ],
             ),

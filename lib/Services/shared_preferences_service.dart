@@ -3,29 +3,31 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as https;
 
-enum SharePrefsAttribute {
-  IS_DARK,
+getToken() async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+
+  String? getToken = await preferences.getString("auth_token");
+  return getToken;
+}
+Future<void> setUserLogin(String auth_token) async{
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.setString("auth_token", auth_token);
+  pref.setBool("is_login", true);
 }
 
-extension ParseToString on SharePrefsAttribute {
-  String toShortString() {
-    return this.toString().split('.').last.toLowerCase();
-  }
+Future<bool?> isUserLogin() async{
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  return pref.getBool("is_login");
 }
 
-class SharedPreferencesService {
-  SharedPreferences? _prefs;
-  get prefs => _prefs;
-  set prefs(instance) => _prefs = instance;
-
-  Future loadInstance() async => _prefs = await SharedPreferences.getInstance();
-
-  bool? isDark() =>
-      _prefs!.getBool(SharePrefsAttribute.IS_DARK.toShortString());
-
-  setIsDark(bool value) =>
-      _prefs!.setBool(SharePrefsAttribute.IS_DARK.toShortString(), value);
-
-  clearPref(SharePrefsAttribute attribute) =>
-      _prefs!.remove(attribute.toShortString());
+Future<String?> whileUserLogin() async{
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  return pref.getString("auth_token");
 }
+
+Future<void> logout() async{
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.remove("auth_key");
+  pref.remove("is_login");
+}
+

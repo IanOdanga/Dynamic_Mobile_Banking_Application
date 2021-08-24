@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Pages/Login/login_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled/Services/authorization_service.dart';
 import 'package:untitled/Pages/Welcome/getting_started.dart';
 
 class SignupScreen extends StatelessWidget {

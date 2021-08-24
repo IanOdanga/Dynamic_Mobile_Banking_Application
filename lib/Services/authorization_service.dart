@@ -1,5 +1,6 @@
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'secure_storage_service.dart';
+
 class AuthorizationService {
   static const String issuer = 'https://';
   static const String redirectUrl =
