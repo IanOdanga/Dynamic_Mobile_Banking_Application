@@ -20,7 +20,7 @@ class SignupScreen extends StatelessWidget {
           tag: 'hero',
           child: CircleAvatar(
             radius: 56.0,
-            child: Image.asset('assets/logo.png'),
+            child: Image.asset('assets/icon.png'),
           )
       ),
     );
@@ -101,7 +101,7 @@ class SignupScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Image.asset(
-                      'assets/logo.png',
+                      'assets/icon.png',
                       height: 130,
                     ),
                     SizedBox(

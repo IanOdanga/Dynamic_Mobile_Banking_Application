@@ -32,7 +32,7 @@ class NavDrawer extends StatelessWidget {
                 color: Colors.cyan.shade200,
                 image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage('assets/logo.png'))),
+                    image: AssetImage('assets/icon.png'))),
           ),
           ListTile(
             leading: Icon(Icons.account_balance),

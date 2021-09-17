@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:untitled/src/domain/users.dart';
@@ -27,12 +28,23 @@ class AuthProvider with ChangeNotifier {
   Status get registeredInStatus => _registeredInStatus;
 
 
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<Map<String, dynamic>> loggingIn(String mobileNo, String pinNo, String idNumber, String uniqueId, String saccoId, String verificationCode, String location, String imsi, String model, String simOperator, String networkState, String simTel) async {
     var result;
 
     final Map<String, dynamic> loginData = {
       'user': {
-        'CloudPESA Pin': password
+        '37359946': idNumber,
+        '6556565': uniqueId,
+        '00048': saccoId,
+        '969628': verificationCode,
+        'KIL': location,
+        'IME34566': imsi,
+        '5299': pinNo,
+        'BUNDY': model,
+        'SAF': simOperator,
+        'SIM DATA': networkState,
+        '254740481483': simTel,
+        '+254740481483': mobileNo
       }
     };
 
@@ -43,7 +55,7 @@ class AuthProvider with ChangeNotifier {
       Uri.parse('https://suresms.co.ke:3438/api/AppLogins'),
       body: json.encode(loginData),
       headers: {
-        'Token': '9790e50e9b3bf9d7a8012ea039940d69c4664a9a911284de51806f20994f3169',
+        'Token': 'c76189858f8a4f1a72f8bb4193e90823f9fb2581032b6c838aac6dcf7aff966d',
         'Content-Type': 'application/json'},
     );
 
@@ -70,23 +82,51 @@ class AuthProvider with ChangeNotifier {
     }
     return result;
   }
-/*
-  Future<Map<String, dynamic>> register(String email, String password, String passwordConfirmation) async {
+
+  Future<Map<String, dynamic>> activation(String mobileNo, String idNumber, String verificationCode, String uniqueId, String saccoId) async {
+    var result;
 
     final Map<String, dynamic> registrationData = {
       'user': {
-        'email': email,
-        'password': password,
-        'password_confirmation': passwordConfirmation
+        '37359946': idNumber,
+        '6556565': uniqueId,
+        '00048': saccoId,
+        '969628': verificationCode,
+        '+254740481483': mobileNo
       }
     };
-    return await post(AppUrl.register,
-        body: json.encode(registrationData),
-        headers: {'Content-Type': 'application/json'})
-        .then(onValue)
-        .catchError(onError);
+    Response response = await post(
+      Uri.parse('https://suresms.co.ke:3438/api/VerifyPhoneNumber'),
+      body: json.encode(activation),
+      headers: {
+        'Token': 'c76189858f8a4f1a72f8bb4193e90823f9fb2581032b6c838aac6dcf7aff966d',
+        'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      var userData = responseData['data'];
+
+      User authUser = User.fromJson(userData);
+
+      UserPreferences().saveUser(authUser);
+
+      _loggedInStatus = Status.LoggedIn;
+      notifyListeners();
+
+      result = {'status': true, 'message': 'Successful', 'user': authUser};
+    } else {
+      _loggedInStatus = Status.NotLoggedIn;
+      notifyListeners();
+      result = {
+        'status': false,
+        'message': json.decode(response.body)['error']
+      };
+    }
+    return result;
   }
-*/
+
   static Future<FutureOr> onValue(Response response) async {
     var result;
     final Map<String, dynamic> responseData = json.decode(response.body);
@@ -105,7 +145,6 @@ class AuthProvider with ChangeNotifier {
         'data': authUser
       };
     } else {
-//      if (response.statusCode == 401) Get.toNamed("/login");
       result = {
         'status': false,
         'message': 'Registration failed',
@@ -120,5 +159,4 @@ class AuthProvider with ChangeNotifier {
     print("the error is $error.detail");
     return {'status': false, 'message': 'Unsuccessful Request', 'data': error};
   }
-
 }

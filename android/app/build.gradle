@@ -54,6 +54,23 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    flavorDimensions "app"
+    productFlavors {
+
+        app1 {
+            dimension "app"
+            applicationId "com.surepesa.umojawendani"
+            versionCode 1
+            versionName "1.0.0"
+        }
+
+        app2 {
+            dimension "app"
+            applicationId "com.surepesa.blueeagles"
+            versionCode 1
+            versionName "1.0.0"
+        }
+    }
 }
 
 android {
@@ -74,4 +91,5 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
 

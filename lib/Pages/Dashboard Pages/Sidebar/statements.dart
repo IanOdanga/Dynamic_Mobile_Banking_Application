@@ -79,7 +79,7 @@ class _StatementsPageState extends State<StatementsPage> {
               : Center(child: CircularProgressIndicator());
         },
       ),
-      );
+    );
   }
 }
 class Loanstatement extends StatelessWidget {

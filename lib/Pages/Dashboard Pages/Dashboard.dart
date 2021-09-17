@@ -12,34 +12,20 @@ import 'package:untitled/Services/api_service.dart';
 import 'package:untitled/drawers/nav-drawer.dart';
 import 'package:http/http.dart' as http;
 
-Future<User?> getUserData() async{
-  final response = await http.get(Uri.parse('https://suresms.co.ke:3438/api/GetmemberInfor'),
-  headers: {
-    HttpHeaders.authorizationHeader: '47813553aa2eac768b903ead1d8b2eb312ed3344e77c87d7ecd92862ff776618',
+Future<http.Response> memberInfo(String mobileNo, String idNumber, String uniqueId) {
+  return http.post(
+    Uri.parse('https://suresms.co.ke:3438/api/GetmemberInfor'),
+    headers: <String, String>{
+      'Token': 'c76189858f8a4f1a72f8bb4193e90823f9fb2581032b6c838aac6dcf7aff966d',
+      'Accept': 'application/json',
     },
+    body: jsonEncode(<String, String>{
+      '37359946': idNumber,
+      '6556565': uniqueId,
+      '+254740481483': mobileNo
+    }),
   );
-
-  if(response.statusCode == 200){
-    final responseJson = jsonDecode(response.body);
-    return User.fromJson(responseJson);
-  }
-  else return null;
 }
-
-class User{
-  final String mobileNo;
-
-  User({
-    required this.mobileNo,
-  });
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      mobileNo: json['+254740481483'],
-    );
-  }
-}
-
 class Dashboard extends StatefulWidget {
   static const String routeName = 'dashboard';
   @override
@@ -48,13 +34,11 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   late BuildContext context;
-  late ApiService apiService;
   late SharedPreferences sharedPreferences;
 
   @override
   void initState() {
     super.initState();
-    apiService = ApiService();
   }
 
   checkStorageStatus() async {
@@ -71,7 +55,6 @@ class _DashboardState extends State<Dashboard> {
                   textStyle: TextStyle(
                     color: Colors.black87,
                     fontWeight: FontWeight.bold,
-                    //fontFamily: 'RobotoSlab',
                   )
               )
           ),
@@ -176,11 +159,5 @@ class _DashboardState extends State<Dashboard> {
               (route) => false,
         );
     }
-  }
-
-  Widget _buildListView(User user){
-    return new ListTile(
-      title: new Text('Member Information'),
-    );
   }
 }

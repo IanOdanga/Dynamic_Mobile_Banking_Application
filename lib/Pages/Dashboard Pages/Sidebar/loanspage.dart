@@ -11,29 +11,17 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:untitled/Services/authorization_service.dart';
 
 class DataService {
-  Future<LoanResponse> getLoans(String phoneNumber, String idNumber) async {
-    final queryParameters = {
-      'mobile_no': '+254740481483',
-    };
-
-    final uri = Uri.https(
-        'suresms.co.ke:3438/api/', 'MobileGetAllLoans', queryParameters);
-
-    final response = await http.get(uri,
-      headers: {
-        HttpHeaders.authorizationHeader: 'accessToken',
+  Future<http.Response> getAllLoans(String mobileNo) {
+    return http.post(
+      Uri.parse('https://suresms.co.ke:3438/api/MobileGetAllLoans'),
+      headers: <String, String>{
+        'Token': 'c76189858f8a4f1a72f8bb4193e90823f9fb2581032b6c838aac6dcf7aff966d',
+        'Content-Type': 'application/json; charset=UTF-8',
       },
+      body: jsonEncode(<String, String>{
+        '+254740481483': mobileNo
+      }),
     );
-    print(response.body);
-    final json = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      print(response.statusCode);
-      print(json.decode(response.body));
-    } else {
-      print(response.statusCode);
-    }
-    return LoanResponse.fromJson(json);
   }
 }
 
@@ -255,7 +243,7 @@ class _LoansPageState extends State<LoansPage> {
     }
   void _search() async {
       CircularProgressIndicator();
-    final response = await _dataService.getLoans(_memberNoController.text, _idNoController.text);
-    setState(() => _response = response);
+    final response = await _dataService.getAllLoans(_memberNoController.text,);
+    setState(() => _response);
   }
 }

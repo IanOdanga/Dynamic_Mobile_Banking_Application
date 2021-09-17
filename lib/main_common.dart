@@ -2,17 +2,21 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:untitled/src/themes/theme.dart';
 import 'Pages/Dashboard Pages/Dashboard.dart';
 import 'Pages/Login/login_page.dart';
-import 'Pages/Welcome/getting_started.dart';
+//import 'home_page.dart';
+//import 'package:flavorsexample/app_config.dart';
+import 'Providers/user_provider.dart';
 import 'Routes/transition_route_observer.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
 
 import 'Services/secure_storage_service.dart';
+import 'Widgets/app_config.dart';
 
-Future<void> main() async {
+Future<void> mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
   const FlutterSecureStorage secureStorage = FlutterSecureStorage();
   final SecureStorageService secureStorageService =
@@ -34,8 +38,17 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'UMOJA WENDANI SACCO',
+    var config = AppConfig.of(context);
+    return _buildApp(config!.appDisplayName);
+  }
+  Widget _buildApp(String appName){{
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AuthProvider()),
+          ChangeNotifierProvider(create: (_) => UserProvider()),
+        ],
+    child: MaterialApp(
+      title: appName,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -56,9 +69,11 @@ class MyApp extends StatelessWidget {
       darkTheme: darkThemeData,
       //themeMode: EasyDynamicTheme.of(context).themeMode,
       debugShowCheckedModeBanner: false,
-      home: GettingStartedScreen(),
+      home: LoginPage(),
       navigatorObservers: [TransitionRouteObserver()],
       initialRoute: LoginPage.routeName,
-    );
+        )
+      );
+    }
   }
 }
