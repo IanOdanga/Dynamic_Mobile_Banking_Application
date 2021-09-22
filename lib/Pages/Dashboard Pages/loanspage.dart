@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -8,7 +9,10 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:provider/provider.dart';
+import 'package:untitled/Pages/Login/Auth.dart';
 import 'package:untitled/Services/authorization_service.dart';
+import 'package:untitled/src/util/widgets.dart';
 
 class DataService {
   Future<http.Response> getAllLoans(String mobileNo) {
@@ -25,98 +29,56 @@ class DataService {
   }
 }
 
-class LoanInfo {
-  final String name;
-  final String memberNo;
-  final String idNo;
-  final String mobileNo;
+class LoanList {
+  late int principleAmount;
+  late int outstandingBalance;
+  late int outstandingInterest;
+  late int totalAmount;
+  late String loanNo;
+  late String loanStatus;
+  Null name;
+  late String loanProductName;
+  late String loanType;
+  late String transType;
 
-  LoanInfo({
-    required this.name,
-    required this.memberNo,
-    required this.idNo,
-    required this.mobileNo,
-  });
+  LoanList(
+      {required this.principleAmount,
+        required this.outstandingBalance,
+        required this.outstandingInterest,
+        required this.totalAmount,
+        required this.loanNo,
+        required this.loanStatus,
+        this.name,
+        required this.loanProductName,
+        required this.loanType,
+        required this.transType});
 
-  factory LoanInfo.fromJson(Map<String, dynamic> json) {
-    final name = json['Name'];
-    final memberNo = json['Member No.'];
-    final idNo = json['ID No.'];
-    final mobileNo = json['Mobile No.'];
-    return LoanInfo(
-      name: name,
-      memberNo: memberNo,
-      idNo: idNo,
-      mobileNo: mobileNo,
-    );
+  LoanList.fromJson(Map<String, dynamic> json, this.principleAmount, this.outstandingBalance, this.outstandingInterest, this.totalAmount, this.loanNo, this.loanStatus, this.loanProductName, this.loanType, this.transType) {
+    principleAmount = json['principle_amount'];
+    outstandingBalance = json['outstanding_balance'];
+    outstandingInterest = json['outstanding_interest'];
+    totalAmount = json['total_amount'];
+    loanNo = json['loan_no'];
+    loanStatus = json['loan_status'];
+    name = json['name'];
+    loanProductName = json['loan_product_name'];
+    loanType = json['loan_type'];
+    transType = json['trans_type'];
   }
-}
 
-class Loanlist {
-  final double principleAmount;
-  final double outstandingBalance;
-  final double outstandingInterest;
-  final double totalAmount;
-  final String loanNo;
-  final String loanProductName;
-  final String loanType;
-  final String loanStatus;
-
-  Loanlist({
-    required this.principleAmount,
-    required this.outstandingBalance,
-    required this.outstandingInterest,
-    required this.totalAmount,
-    required this.loanNo,
-    required this.loanProductName,
-    required this.loanType,
-    required this.loanStatus
-  });
-
-  factory Loanlist.fromJson(Map<String, dynamic> json) {
-    final principleAmount = json['Principle amount'];
-    final outstandingBalance = json['Outstanding balance'];
-    final outstandingInterest = json['Outstanding interest'];
-    final totalAmount = json['Total amount'];
-    final loanNo = json['Loan no'];
-    final loanProductName = json['Loan product name'];
-    final loanType = json['Loan type'];
-    final loanStatus = json['Loan status'];
-    return Loanlist(
-      principleAmount: principleAmount,
-      outstandingBalance: outstandingBalance,
-      outstandingInterest: outstandingInterest,
-      totalAmount: totalAmount,
-      loanNo: loanNo,
-      loanProductName: loanProductName,
-      loanType: loanType,
-      loanStatus: loanStatus,
-    );
-  }
-}
-
-class LoanResponse {
-  late final String loanType;
-  late final Loanlist loanlist;
-  late final LoanInfo loanInfo;
-
-  LoanResponse({
-    required this.loanType,
-    required this.loanlist,
-    required this.loanInfo
-  });
-
-  factory LoanResponse.fromJson(Map<String, dynamic> json) {
-    final loanType = json['name'];
-
-    final loanlistJson = json['loan list'];
-    final loanlist = Loanlist.fromJson(loanlistJson);
-
-    final loanInfoJson = json['loan info'][0];
-    final loanInfo = LoanInfo.fromJson(loanInfoJson);
-
-    return LoanResponse(
-        loanType: loanType, loanlist: loanlist, loanInfo: loanInfo);
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['principle_amount'] = this.principleAmount;
+    data['outstanding_balance'] = this.outstandingBalance;
+    data['outstanding_interest'] = this.outstandingInterest;
+    data['total_amount'] = this.totalAmount;
+    data['loan_no'] = this.loanNo;
+    data['loan_status'] = this.loanStatus;
+    data['name'] = this.name;
+    data['loan_product_name'] = this.loanProductName;
+    data['loan_type'] = this.loanType;
+    data['trans_type'] = this.transType;
+    return data;
   }
 }
 
@@ -126,17 +88,17 @@ class LoansPage extends StatefulWidget{
 }
 
 class _LoansPageState extends State<LoansPage> {
-  LoanResponse? _response;
 
+  final formKey = new GlobalKey<FormState>();
   final _memberNoController = TextEditingController();
   final _idNoController = TextEditingController();
   final _dataService = DataService();
-
+  late LoanList _response;
 
     @override
     Widget build(BuildContext context) {
+      AuthProvider auth = Provider.of<AuthProvider>(context);
       final FlutterSecureStorage flutterSecureStorage;
-      return Scaffold(
         appBar: AppBar(
           title: Text('Loans',
               style: GoogleFonts.raleway(
@@ -147,58 +109,19 @@ class _LoansPageState extends State<LoansPage> {
               )
           ),
           backgroundColor: Colors.white,
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_response != null)
-                Column(
-                  children: [
-                    Text(_response!.loanInfo.name),
-                    Text(_response!.loanInfo.memberNo),
-                    Text(_response!.loanInfo.idNo),
-                    Text(_response!.loanInfo.mobileNo),
-                    Text(
-                      '${_response!.loanlist.principleAmount}°',
-                      style: TextStyle(fontSize: 40),
-                    ),
-                    Text(
-                      '${_response!.loanlist.outstandingBalance}°',
-                      style: TextStyle(fontSize: 40),
-                    ),
-                    Text(
-                      '${_response!.loanlist.outstandingInterest}°',
-                      style: TextStyle(fontSize: 40),
-                    ),
-                    Text(
-                      '${_response!.loanlist.totalAmount}°',
-                      style: TextStyle(fontSize: 40),
-                    ),
-                    Text(
-                      '${_response!.loanlist.loanNo}°',
-                      style: TextStyle(fontSize: 40),
-                    ),
-                    Text(
-                      '${_response!.loanlist.loanProductName}°',
-                      style: TextStyle(fontSize: 40),
-                    ),
-                    Text(
-                      '${_response!.loanlist.loanType}°',
-                      style: TextStyle(fontSize: 40),
-                    ),
-                    Text(
-                      '${_response!.loanlist.loanStatus}°',
-                      style: TextStyle(fontSize: 40),
-                    ),
-                    Text(_response!.loanInfo.name)
-                  ],
-                ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 50),
-                child: SizedBox(
-                  width: 150,
-                  child: TextField(
+        );
+      var loading = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          CircularProgressIndicator(),
+          Text(" Loading ...")
+        ],
+      );
+      final inputPhoneNumber = Padding(
+        padding: EdgeInsets.symmetric(vertical: 50),
+          child: SizedBox(
+          width: 150,
+            child: TextField(
                       controller: _memberNoController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(labelText: 'Phone Number',
@@ -210,8 +133,8 @@ class _LoansPageState extends State<LoansPage> {
                       ),
                       textAlign: TextAlign.center),
                 ),
-              ),
-              Padding(
+              );
+      final inputIDNumber = Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: SizedBox(
                   width: 150,
@@ -227,23 +150,53 @@ class _LoansPageState extends State<LoansPage> {
                       ),
                       textAlign: TextAlign.center),
                 ),
+              );
+      var getLoans = () {
+        final form = formKey.currentState;
+
+        if (form!.validate()) {
+          form.save();
+
+          final Future<Map<String, dynamic>> successfulMessage =
+          DataService() as Future<Map<String, dynamic>>;
+
+          successfulMessage.then((response) {
+            if (response['status']) {
+              Navigator.pushReplacementNamed(context, '/dashboard');
+            } else {
+              Flushbar(
+                title: "Failed to load Loans",
+                message: response['message']['message'].toString(),
+                duration: Duration(seconds: 3),
+              ).show(context);
+            }
+          });
+        } else {
+          print("form is invalid");
+        }
+      };
+      return SafeArea(
+          child: Scaffold(
+            body: Center(
+              child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              children: <Widget>[
+                inputPhoneNumber,
+                inputIDNumber,
+              auth.loggedInStatus == Status.Authenticating
+                ? loading
+                : longButtons("Get Loans", getLoans),
+                SizedBox(height: 5.0),
+                ],
               ),
-              ElevatedButton(onPressed: _search, child: Text('Get Loans',
-              style: GoogleFonts.lato(
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                    )
-                  ),
-                )
-              )
-            ],
-          ),
-        ),
-      );
-    }
+            ),
+          )
+        );
+      }
   void _search() async {
       CircularProgressIndicator();
     final response = await _dataService.getAllLoans(_memberNoController.text,);
-    setState(() => _response);
+    setState(() => _response = response as LoanList);
   }
 }

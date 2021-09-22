@@ -2,48 +2,82 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:untitled/Pages/Login/Auth.dart';
+import 'package:untitled/src/util/widgets.dart';
 
-Future<statement_list> fetchLoanStatements() async {
-  final response = await http.get(
-    Uri.parse('https://suresms.co.ke:3438/api/MobileLoanStatement'),
-    // Send authorization headers to the backend.
-    headers: {
-      HttpHeaders.authorizationHeader: '3d3e7e331346fa1a531388e5f5461392621eeeb04cfeb2ffce9ed13e5c07e318',
-    },
-  );
-  final responseJson = jsonDecode(response.body);
-
-  return statement_list.fromJson(responseJson);
-}
-
-class statement_list {
-  final String mobile_no;
-
-  statement_list({
-    required this.mobile_no,
-  });
-
-  factory statement_list.fromJson(Map<String, dynamic> json) {
-    return statement_list(
-      mobile_no: json['+254740481483'],
+class DataService {
+  Future<http.Response> getAllLoans(String mobileNo) {
+    return http.post(
+      Uri.parse('https://suresms.co.ke:3438/api/MobileGetAllLoans'),
+      headers: <String, String>{
+        'Token': 'c76189858f8a4f1a72f8bb4193e90823f9fb2581032b6c838aac6dcf7aff966d',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        '+254740481483': mobileNo
+      }),
     );
   }
 }
-Future<List<statement_list>> fetchLoans(http.Client client) async {
-  final response = await client
-      .post(Uri.parse('https://suresms.co.ke:3438/api/MobileLoanStatement'));
 
-  return compute(parseLoanStatement, response.body);
-}
+class StatementList {
+  late int principleAmount;
+  late int outstandingBalance;
+  late int outstandingInterest;
+  late int totalAmount;
+  late String loanNo;
+  late String loanStatus;
+  Null name;
+  late String loanProductName;
+  late String loanType;
+  late String transType;
 
-List<statement_list> parseLoanStatement(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  StatementList(
+      {required this.principleAmount,
+        required this.outstandingBalance,
+        required this.outstandingInterest,
+        required this.totalAmount,
+        required this.loanNo,
+        required this.loanStatus,
+        this.name,
+        required this.loanProductName,
+        required this.loanType,
+        required this.transType});
 
-  return parsed.map<statement_list>((json) => statement_list.fromJson(json)).toList();
+  StatementList.fromJson(Map<String, dynamic> json, this.principleAmount, this.outstandingBalance, this.outstandingInterest, this.totalAmount, this.loanNo, this.loanStatus, this.loanProductName, this.loanType, this.transType) {
+    principleAmount = json['principle_amount'];
+    outstandingBalance = json['outstanding_balance'];
+    outstandingInterest = json['outstanding_interest'];
+    totalAmount = json['total_amount'];
+    loanNo = json['loan_no'];
+    loanStatus = json['loan_status'];
+    name = json['name'];
+    loanProductName = json['loan_product_name'];
+    loanType = json['loan_type'];
+    transType = json['trans_type'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['principle_amount'] = this.principleAmount;
+    data['outstanding_balance'] = this.outstandingBalance;
+    data['outstanding_interest'] = this.outstandingInterest;
+    data['total_amount'] = this.totalAmount;
+    data['loan_no'] = this.loanNo;
+    data['loan_status'] = this.loanStatus;
+    data['name'] = this.name;
+    data['loan_product_name'] = this.loanProductName;
+    data['loan_type'] = this.loanType;
+    data['trans_type'] = this.transType;
+    return data;
+  }
 }
 
 class StatementsPage extends StatefulWidget {
@@ -54,49 +88,115 @@ class StatementsPage extends StatefulWidget {
 }
 
 class _StatementsPageState extends State<StatementsPage> {
-  late Future<statement_list> futureLoanStatements;
+
+  final formKey = new GlobalKey<FormState>();
+  final _memberNoController = TextEditingController();
+  final _idNoController = TextEditingController();
+  final _dataService = DataService();
+  late StatementList _response;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-        title: Text('Statements',
-        style: GoogleFonts.raleway(
-        textStyle: TextStyle(
-        color: Colors.black87,
-        fontWeight: FontWeight.bold,
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+    final FlutterSecureStorage flutterSecureStorage;
+    appBar: AppBar(
+      title: Text('Statements',
+          style: GoogleFonts.raleway(
+              textStyle: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
               )
-            )
-          ),
-        ),
-      body: FutureBuilder<List<statement_list>>(
-        future: fetchLoans(http.Client()),
-        builder: (context, snapshot) {
-          if (snapshot.hasError)
-            print(snapshot.error);
-          return snapshot.hasData
-              ? Loanstatement(statementlist: snapshot.data!)
-              : Center(child: CircularProgressIndicator());
-        },
+          )
       ),
+      backgroundColor: Colors.white,
+    );
+    var loading = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+        Text(" Loading ...")
+      ],
+    );
+    final inputPhoneNumber = Padding(
+      padding: EdgeInsets.symmetric(vertical: 50),
+      child: SizedBox(
+        width: 150,
+        child: TextField(
+            controller: _memberNoController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: 'Phone Number',
+              labelStyle: GoogleFonts.lato(
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                  )
+              ),
+            ),
+            textAlign: TextAlign.center),
+      ),
+    );
+    final inputIDNumber = Padding(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: SizedBox(
+        width: 150,
+        child: TextField(
+            controller: _idNoController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(labelText: 'ID Number',
+              labelStyle: GoogleFonts.lato(
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                  )
+              ),
+            ),
+            textAlign: TextAlign.center),
+      ),
+    );
+    var getLoans = () {
+      final form = formKey.currentState;
+
+      if (form!.validate()) {
+        form.save();
+
+        final Future<Map<String, dynamic>> successfulMessage =
+        DataService() as Future<Map<String, dynamic>>;
+
+        successfulMessage.then((response) {
+          if (response['status']) {
+            Navigator.pushReplacementNamed(context, '/dashboard');
+          } else {
+            Flushbar(
+              title: "Failed to load Loans",
+              message: response['message']['message'].toString(),
+              duration: Duration(seconds: 3),
+            ).show(context);
+          }
+        });
+      } else {
+        print("form is invalid");
+      }
+    };
+    return SafeArea(
+        child: Scaffold(
+          body: Center(
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              children: <Widget>[
+                inputPhoneNumber,
+                inputIDNumber,
+                auth.loggedInStatus == Status.Authenticating
+                    ? loading
+                    : longButtons("Get BOSA Statements", getLoans),
+                SizedBox(height: 5.0),
+              ],
+            ),
+          ),
+        )
     );
   }
-}
-class Loanstatement extends StatelessWidget {
-  final List<statement_list> statementlist;
-
-  Loanstatement({Key? key, required this.statementlist}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
-      itemCount: statementlist.length,
-      itemBuilder: (context, index) {
-        return Image.network(statementlist[index].mobile_no);
-      },
-    );
+  void _search() async {
+    CircularProgressIndicator();
+    final response = await _dataService.getAllLoans(_memberNoController.text,);
+    setState(() => _response = response as StatementList);
   }
 }

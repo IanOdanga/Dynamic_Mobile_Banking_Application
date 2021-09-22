@@ -263,7 +263,7 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 logo,
                 inputPassword,
-                //buttonLogin,
+                buttonLogin,
                 auth.loggedInStatus == Status.Authenticating
                     ? loading
                     : longButtons("Login", doLogin),

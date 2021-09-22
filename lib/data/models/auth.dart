@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
-import '../../constants.dart';
+import '../../umojaw_constants.dart';
 import '../classes/user.dart';
 
 class AuthModel extends ChangeNotifier {

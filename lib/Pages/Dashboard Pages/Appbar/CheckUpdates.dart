@@ -69,7 +69,7 @@ class _UpdatesState extends State<Updates> {
                         textStyle: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 10,
                         )
                     )
                 ),
@@ -81,7 +81,7 @@ class _UpdatesState extends State<Updates> {
                         textStyle: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 10,
                         )
                     )
                 ),
@@ -99,7 +99,7 @@ class _UpdatesState extends State<Updates> {
                         textStyle: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 10,
                         )
                     )
                 ),
@@ -122,7 +122,7 @@ class _UpdatesState extends State<Updates> {
                         textStyle: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 10,
                         )
                     )
                 ),
