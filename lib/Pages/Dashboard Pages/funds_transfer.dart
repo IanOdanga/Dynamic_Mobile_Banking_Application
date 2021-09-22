@@ -11,6 +11,7 @@ class _FundsTransferState extends State<FundsTransfer> {
   double money = 50.00;
   final sendController = TextEditingController();
   final recipientController = TextEditingController();
+  final sourceController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,8 +124,8 @@ class _FundsTransferState extends State<FundsTransfer> {
                       },
                       leading: CircleAvatar(backgroundImage: AssetImage("images/p3.jpg"),),
                       title: RichText(text: TextSpan(children: [
-                        TextSpan(text: 'Ian Luke\n'),
-                        TextSpan(text: 'Money Sent - Today 9AM', style: TextStyle(fontSize: 14, color: grey))
+                        TextSpan(text: 'Normal Account\n'),
+                        TextSpan(text: 'Money Sent - 12th August 9AM', style: TextStyle(fontSize: 14, color: grey))
                       ], style: TextStyle(color: Colors.black, fontSize: 18))),
                       trailing: Text("- \K\s\h. 6277", style: TextStyle(fontSize: 20),),
                     ),
@@ -135,8 +136,8 @@ class _FundsTransferState extends State<FundsTransfer> {
                       },
                       leading: CircleAvatar(backgroundImage: AssetImage("images/p2.jpg"),),
                       title: RichText(text: TextSpan(children: [
-                        TextSpan(text: 'Martin Mueni\n'),
-                        TextSpan(text: 'Money received - Today 12PM', style: TextStyle(fontSize: 14, color: grey))
+                        TextSpan(text: 'Holiday Account\n'),
+                        TextSpan(text: 'Money received - 11th August 12PM', style: TextStyle(fontSize: 14, color: grey))
                       ], style: TextStyle(color: Colors.black, fontSize: 18))),
                       trailing: Text("+ \K\s\h. 5350", style: TextStyle(fontSize: 20),),
                     ),
@@ -186,7 +187,7 @@ class _FundsTransferState extends State<FundsTransfer> {
                 Container(
                   alignment: Alignment.center,
                   child: Text("Amount to send",
-                      style: GoogleFonts.raleway(
+                      style: GoogleFonts.lato(
                           textStyle: TextStyle(
                             color: Colors.black87,
                           )
@@ -209,8 +210,8 @@ class _FundsTransferState extends State<FundsTransfer> {
                 ),
                 Container(
                   alignment: Alignment.center,
-                  child: Text("Recipient",
-                      style: GoogleFonts.raleway(
+                  child: Text("Source Account",
+                      style: GoogleFonts.lato(
                           textStyle: TextStyle(
                             color: Colors.black87,
                           )
@@ -218,7 +219,31 @@ class _FundsTransferState extends State<FundsTransfer> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(bottom: 10),
+                  padding: EdgeInsets.only(bottom: 7),
+                  alignment: Alignment.center,
+                  child: TextFormField(
+                      controller: sourceController,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      textAlignVertical: TextAlignVertical.center,
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      )
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: Text("Destination Account",
+                      style: GoogleFonts.lato(
+                          textStyle: TextStyle(
+                            color: Colors.black87,
+                          )
+                      )
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(bottom: 7),
                   alignment: Alignment.center,
                   child: TextFormField(
                       controller: recipientController,
@@ -239,8 +264,8 @@ class _FundsTransferState extends State<FundsTransfer> {
                       padding: const EdgeInsets.all(2.0),
                     ),
                     SizedBox(width: 10,),
-                    Text('Transfer Ksh. ${sendController.text} to ${recipientController.text}', style: TextStyle(
-                        fontSize: 30, fontWeight: FontWeight.bold),),
+                    Text('Transfer Ksh. ${sendController.text}from ${sourceController.text} to ${recipientController.text}', style: TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),),
                     SizedBox(width: 10,),
                     Padding(
                       padding: const EdgeInsets.all(2.0),

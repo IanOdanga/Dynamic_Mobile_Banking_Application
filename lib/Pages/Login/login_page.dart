@@ -50,7 +50,7 @@ Future<http.Response> login(String mobileNo, String pinNo, String idNumber, Stri
     return http.post(
       Uri.parse('https://suresms.co.ke:3438/api/AppLogins'),
       headers: <String, String>{
-        'Token': 'c76189858f8a4f1a72f8bb4193e90823f9fb2581032b6c838aac6dcf7aff966d',
+        'Token': '933bcb91bc53f1a72e6b160901e08d24824dcbc142af84599b3b76dcaaa4678b',
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
@@ -103,11 +103,11 @@ class _LoginPageState extends State<LoginPage> {
       //appBar: AppBar(
         //title: Text(config!.appDisplayName),
       //),
-      //body: _buildBody(config.appInternalId),
+      body: _buildBody(config!.appInternalId),
     );
   }
 
-  Widget _buildBody(String appName, int appInternalId) {
+  Widget _buildBody(int appInternalId) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
     final logo = Padding(
       padding: EdgeInsets.all(20),

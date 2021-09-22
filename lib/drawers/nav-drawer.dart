@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:untitled/Pages/Dashboard Pages/Sidebar/ReachUs.dart';
-import 'package:untitled/Pages/Dashboard Pages/Sidebar/cash_withdrawals.dart';
-import 'package:untitled/Pages/Dashboard Pages/Sidebar/deposits.dart';
-import 'package:untitled/Pages/Dashboard Pages/Sidebar/funds_transfer.dart';
-import 'package:untitled/Pages/Dashboard Pages/Sidebar/feedback.dart';
-import 'package:untitled/Pages/Dashboard Pages/Sidebar/loanspage.dart';
-import 'package:untitled/Pages/Dashboard Pages/Sidebar/statements.dart';
+import 'package:untitled/Pages/Dashboard%20Pages/ReachUs.dart';
+import 'package:untitled/Pages/Dashboard%20Pages/cash_withdrawals.dart';
+import 'package:untitled/Pages/Dashboard%20Pages/deposits.dart';
+import 'package:untitled/Pages/Dashboard%20Pages/funds_transfer.dart';
+import 'package:untitled/Pages/Dashboard%20Pages/feedback.dart';
+import 'package:untitled/Pages/Dashboard%20Pages/loanspage.dart';
+import 'package:untitled/Pages/Dashboard%20Pages/statements.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
 class NavDrawer extends StatelessWidget {

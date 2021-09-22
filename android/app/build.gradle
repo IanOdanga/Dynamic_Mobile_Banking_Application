@@ -64,9 +64,9 @@ android {
             versionName "1.0.0"
         }
 
-        app2 {
+        BlueEagle {
             dimension "app"
-            applicationId "com.surepesa.blueeagles"
+            applicationId "com.surepesa.blueeagle"
             versionCode 1
             versionName "1.0.0"
         }

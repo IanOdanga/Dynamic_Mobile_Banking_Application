@@ -12,10 +12,14 @@ class CashWithdrawals extends StatefulWidget{
 }
 
 class _CashWithdrawalsState extends State<CashWithdrawals>{
-  WithdrawTo? _withdrawTo = WithdrawTo.MPesa;
+  //WithdrawTo? _withdrawTo = WithdrawTo.MPesa;
   double money = 5000;
   final myController = TextEditingController();
+  final sourceController = TextEditingController();
   final radioController = TextEditingController();
+
+  late String _chosenValue;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,7 +172,7 @@ class _CashWithdrawalsState extends State<CashWithdrawals>{
                 Container(
                   alignment: Alignment.center,
                   child: Text("Amount to withdraw",
-                      style: GoogleFonts.raleway(
+                      style: GoogleFonts.lato(
                           textStyle: TextStyle(
                             color: Colors.black87,
                           )
@@ -191,64 +195,67 @@ class _CashWithdrawalsState extends State<CashWithdrawals>{
                 ),
                 Container(
                   alignment: Alignment.center,
-                  child: Text("Where do you want to withdraw to?",
-                      style: GoogleFonts.raleway(
+                  child: Text("Source Account",
+                      style: GoogleFonts.lato(
                           textStyle: TextStyle(
                             color: Colors.black87,
                           )
                       )
                   ),
                 ),
-                Column(
-
-                  children: <Widget>[
-                    ListTile(
-                      title: Text('MPesa',
-                          style: GoogleFonts.raleway(
-                              textStyle: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 10.0,
-                              )
+                Container(
+                  padding: EdgeInsets.only(bottom: 10),
+                  alignment: Alignment.center,
+                  child: TextFormField(
+                      controller: sourceController,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      textAlignVertical: TextAlignVertical.center,
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      )
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: Text("Where do you want to withdraw to?",
+                      style: GoogleFonts.lato(
+                          textStyle: TextStyle(
+                            color: Colors.black87,
                           )
-                      ),
-                      leading: Radio(
-                        value: WithdrawTo.MPesa,
-                        groupValue: _withdrawTo,
-                        onChanged: (WithdrawTo? value) {
-                          controller: radioController;
-                          setState(() {
-                            _withdrawTo = value;
-                            print(_withdrawTo);
-                          });
-                        },
-                        activeColor: Colors.green,
-                        toggleable: true,
-                      ),
+                      )
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(20),
+                  child:DropdownButton<String>(
+                    focusColor:Colors.white,
+                    value: _chosenValue,
+                    //elevation: 5,
+                    style: GoogleFonts.lato(
+                  textStyle: TextStyle(color: Colors.white,)),
+                    iconEnabledColor:Colors.black,
+                    items: <String>[
+                      'MPesa',
+                      'Bank',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value,style: GoogleFonts.lato(textStyle: TextStyle(color: Colors.white,)),),
+                      );
+                    }).toList(),
+                    hint:Text(
+                      "Please choose",
+                      style: GoogleFonts.lato(
+                          textStyle: TextStyle(color: Colors.white,)),
                     ),
-                    ListTile(
-                      title: Text('Bank',
-                          style: GoogleFonts.raleway(
-                              textStyle: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 10.0,
-                              )
-                          )
-                      ),
-                      leading: Radio(
-                        value: WithdrawTo.Bank,
-                        groupValue: _withdrawTo,
-                        onChanged: (WithdrawTo? value) {
-                          controller: radioController;
-                          setState(() {
-                            _withdrawTo = value;
-                            print(_withdrawTo);
-                          });
-                        },
-                        activeColor: Colors.green,
-                        toggleable: true,
-                      ),
-                    ),
-                  ],
+                    onChanged: (String? value) {
+                      setState(() {
+                        _chosenValue = value!;
+                      });
+                    },
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -257,8 +264,8 @@ class _CashWithdrawalsState extends State<CashWithdrawals>{
                       padding: const EdgeInsets.all(2.0),
                     ),
                     SizedBox(width: 10,),
-                    Text('Withdraw Ksh. ${myController.text} to ${radioController.text}', style: TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),),
+                    Text('Withdraw Ksh. ${myController.text} from ${sourceController.text} to ${radioController.text}', style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.bold),),
                     SizedBox(width: 10,),
                     Padding(
                       padding: const EdgeInsets.all(2.0),

@@ -48,7 +48,7 @@ class SignupScreen extends StatelessWidget {
           //  _isLoading = false;
         //  }//);
           sharedPreferences.setString("token",
-              jsonResponse['d917b18e0e564e8fcd60046ad9c93d78e485c100ca39d1de50af26399ccf4d54']);
+              jsonResponse['933bcb91bc53f1a72e6b160901e08d24824dcbc142af84599b3b76dcaaa4678b']);
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
               builder: (BuildContext context) => LoginPage()), (
               Route<dynamic> route) => false);
