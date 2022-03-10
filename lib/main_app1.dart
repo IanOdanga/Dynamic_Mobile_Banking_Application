@@ -6,7 +6,7 @@ import 'main_common.dart';
 void main() {
   var configuredApp = AppConfig(
     appDisplayName: "UMOJA WENDANI SACCO",
-    appInternalId: 1,
+    appInternalId: "umoja",
     stringResource: StringResourceApp1(),
     child: MyApp(),
   );

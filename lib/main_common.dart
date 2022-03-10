@@ -1,29 +1,38 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:untitled/src/themes/theme.dart';
-import 'Pages/Dashboard Pages/Dashboard.dart';
-import 'Pages/Login/login_page.dart';
-//import 'home_page.dart';
-//import 'package:flavorsexample/app_config.dart';
-import 'Providers/user_provider.dart';
+import 'Screens/deposits_screen.dart';
+import 'Screens/legal_screen.dart';
+import 'Screens/profile_screen.dart';
+import 'Screens/settings_page.dart';
+import 'Screens/main_screen.dart';
+import 'package:page_transition/page_transition.dart';
+import 'Screens/cash_withdrawals_screen.dart';
+import 'Screens/funds_transfer_screen.dart';
+import 'Screens/loans_screen.dart';
+import 'Screens/statements.dart';
+import 'Screens/login_screen.dart';
+import 'Screens/signup_screen.dart';
 import 'Routes/transition_route_observer.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
-
 import 'Services/secure_storage_service.dart';
 import 'Widgets/app_config.dart';
 
 Future<void> mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   const FlutterSecureStorage secureStorage = FlutterSecureStorage();
   final SecureStorageService secureStorageService =
   SecureStorageService(secureStorage);
   final String? refreshToken = await secureStorageService.getRefreshToken();
-  final String initialRoute =
-  refreshToken == null ? LoginPage.routeName : Dashboard.routeName;
+  //final String initialRoute =
+  //refreshToken == null ? LoginPage.idScreen : Dashboard.idScreen;
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       systemNavigationBarColor:
@@ -39,16 +48,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var config = AppConfig.of(context);
-    return _buildApp(config!.appDisplayName);
+    return _buildApp(/*config!.appDisplayName*/);
   }
-  Widget _buildApp(String appName){{
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => AuthProvider()),
-          ChangeNotifierProvider(create: (_) => UserProvider()),
-        ],
-    child: MaterialApp(
-      title: appName,
+  Widget _buildApp(/*String appName*/){{
+    return MaterialApp(
+      /*title: appName,*/
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -69,11 +73,29 @@ class MyApp extends StatelessWidget {
       darkTheme: darkThemeData,
       //themeMode: EasyDynamicTheme.of(context).themeMode,
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      initialRoute: LoginPage.idScreen,
+        home: AnimatedSplashScreen(
+            duration: 3000,
+            splash: Icons.home,
+            nextScreen: LoginPage(),
+            splashTransition: SplashTransition.fadeTransition,
+            pageTransitionType: PageTransitionType.scale,
+            backgroundColor: Colors.blue),
+      routes:{
+        SignupScreen.idScreen: (context) => SignupScreen(),
+        LoginPage.idScreen: (context) => LoginPage(),
+        Dashboard.idScreen: (context) => Dashboard(),
+        ProfilePage.idScreen: (context) => ProfilePage(),
+        SettingsPage.idScreen: (context) => SettingsPage(),
+        Updates.idScreen: (context) => Updates(),
+        CashWithdrawals.idScreen: (context) => CashWithdrawals(),
+        DepositsPage.idScreen: (context) => DepositsPage(),
+        FundsTransfer.idScreen: (context) => FundsTransfer(),
+        LoansPage.idScreen: (context) => LoansPage(),
+        StatementsPage.idScreen: (context) => StatementsPage(),
+      },
       navigatorObservers: [TransitionRouteObserver()],
-      initialRoute: LoginPage.routeName,
-        )
-      );
+        );
     }
   }
 }

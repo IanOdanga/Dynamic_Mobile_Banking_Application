@@ -5,7 +5,7 @@ class AppConfig extends InheritedWidget {
     required Widget child}):super(child: child);
 
   final String appDisplayName;
-  final int appInternalId;
+  final String appInternalId;
   final StringResource stringResource;
 
   static AppConfig? of(BuildContext context) {

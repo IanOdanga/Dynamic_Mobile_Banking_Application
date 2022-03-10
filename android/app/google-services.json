@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "229197347223",
-    "project_id": "umojawendaniapp",
-    "storage_bucket": "umojawendaniapp.appspot.com"
+    "project_number": "461733127295",
+    "project_id": "cloudpesadynamicapps",
+    "storage_bucket": "cloudpesadynamicapps.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:229197347223:android:31d9105398943f6ed62cd2",
+        "mobilesdk_app_id": "1:461733127295:android:0e4f70d3302d657bb0cb4a",
         "android_client_info": {
-          "package_name": "com.surepesa.umojawendani"
+          "package_name": "com.surepesa.dynamicapps"
         }
       },
       "oauth_client": [
         {
-          "client_id": "229197347223-ea7mfd1vr5n132g7c96uss4fll1dpp3f.apps.googleusercontent.com",
+          "client_id": "461733127295-qvknvsi0frtns9oa0nj4bg7f08g1vcm8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBzrcjQdcAczNa57qZ8ctOqm9G4aHKh7pk"
+          "current_key": "AIzaSyCpO4XO4Enzsm6u1qn3eVAWZfzaxUG2WSY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "229197347223-ea7mfd1vr5n132g7c96uss4fll1dpp3f.apps.googleusercontent.com",
+              "client_id": "461733127295-qvknvsi0frtns9oa0nj4bg7f08g1vcm8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
